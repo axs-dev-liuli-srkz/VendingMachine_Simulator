@@ -7,7 +7,7 @@
 #define ITEM_KIND 6
 #define MIN_PRICE 110
 
-// ï¿½ï¿½ï¿½iï¿½\ï¿½ï¿½ï¿½ï¿½
+// ¤•i\‘¢‘Ì
 typedef struct {
 	int no;
 	char name[20];
@@ -15,17 +15,17 @@ typedef struct {
 	int num;
 } item;
 
-item tomato = { 1, "ï¿½gï¿½}ï¿½g", 150, 10 };
-item apple = { 2, "ï¿½ï¿½ï¿½ï¿½ï¿½S", 140, 10 };
-item greenTea = { 3, "ï¿½Î’ï¿½", 130, 10 };
-item cola = { 4, "ï¿½Rï¿½[ï¿½ï¿½", 120, 10 };
-item water = { 5, "ï¿½ï¿½", 110, 10 };
+item tomato = { 1, "ƒgƒ}ƒg", 150, 10 };
+item apple = { 2, "ƒŠƒ“ƒS", 140, 10 };
+item greenTea = { 3, "—Î’ƒ", 130, 10 };
+item cola = { 4, "ƒR[ƒ‰", 120, 10 };
+item water = { 5, "…", 110, 10 };
 
-item items[ITEM_KIND] = { { 0, "ï¿½Tï¿½ï¿½ï¿½vï¿½ï¿½", 0, 0 }, { 1, "ï¿½gï¿½}ï¿½g", 150, 10 }, { 2,
-		"ï¿½ï¿½ï¿½ï¿½ï¿½S", 140, 10 }, { 3, "ï¿½Î’ï¿½", 130, 10 }, { 4, "ï¿½Rï¿½[ï¿½ï¿½", 120, 10 }, { 5, "ï¿½ï¿½",
+item items[ITEM_KIND] = { { 0, "ƒTƒ“ƒvƒ‹", 0, 0 }, { 1, "ƒgƒ}ƒg", 150, 10 }, { 2,
+		"ƒŠƒ“ƒS", 140, 10 }, { 3, "—Î’ƒ", 130, 10 }, { 4, "ƒR[ƒ‰", 120, 10 }, { 5, "…",
 		110, 10 } };
 
-// ï¿½ï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½
+// ‚¨‹à\‘¢‘Ì
 typedef struct {
 	int no;
 	char name[20];
@@ -42,16 +42,38 @@ money payment[MONEY_KIND] = { { 1, "1000", 1000, 0 }, { 2, "500", 500, 0 }, { 3,
 money change[MONEY_KIND] = { { 1, "1000", 1000, 0 }, { 2, "500", 500, 0 }, { 3,
 		"100", 100, 0 }, { 4, "50", 50, 0 }, { 5, "10", 10, 0 } };
 
-// ï¿½ï¿½ï¿½ã‡ï¿½v
+// ”„ã‡Œv
 int earnings;
-// ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½ï¿½v
+// “ü‹àŠz‡Œv
 int amountOfPayment = 0;
-// ï¿½ï¿½ï¿½ï¿½
+// ”„ã
 int earning = 0;
-// ï¿½Ş‚ï¿½Kï¿½ï¿½ï¿½v
+// ’Ş‚è‘K‡Œv
 int amoutOfChange = 0;
-// ï¿½Iï¿½ï¿½ï¿½Rï¿½}ï¿½ï¿½ï¿½h
+// I—¹ƒRƒ}ƒ“ƒh
 const char end[] = "end";
+
+// •Ô‹à——R—ñ‹“‘Ì
+typedef enum {
+	END,
+	OVER_MAX_PAYMENT,
+	INSUFFICIENT_PAYMENT,
+	NON_EXIST_ITEM,
+	NON_EXIST_COMMAND,
+	INSUFFICIENTNON_ITEM,
+	INSUFFICIENT_CHANGE
+} ReturnReason;
+
+void returnCurrency(ReturnReason reason);
+void displayInitialScreen();
+void displayItemInfo();
+void displayFinanceInfo();
+void pay();
+void selectItems();
+void calcChangeCurrency();
+void initializePayment();
+void displayAdmin();
+int checkCountOfCharge();
 
 int main(void) {
 
@@ -63,57 +85,57 @@ int main(void) {
 }
 
 /*
- * ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê•\ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
- * ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½A
- * ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½ÉƒRï¿½}ï¿½ï¿½ï¿½hï¿½Ì“ï¿½ï¿½Í‚ğ‘£‚ï¿½ï¿½Ü‚ï¿½ï¿½B
- * 1.[buy]ï¿½ï¿½ï¿½pï¿½Òwï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½h
- * 2.[end]ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½
- * 3.[admin]ï¿½Ç—ï¿½ï¿½Òƒï¿½ï¿½[ï¿½h
+ * ‰Šú‰æ–Ê•\¦‚µ‚Ü‚·B
+ * ¤•iî•ñ‚ğ•\¦‚µ‚½ŒãA
+ * ƒ†[ƒU[‚ÉƒRƒ}ƒ“ƒh‚Ì“ü—Í‚ğ‘£‚µ‚Ü‚·B
+ * 1.[buy]—˜—pÒw“üƒ‚[ƒh
+ * 2.[end]ƒLƒƒƒ“ƒZƒ‹
+ * 3.[admin]ŠÇ—Òƒ‚[ƒh
  */
 void displayInitialScreen() {
-	//	1.ï¿½cï¿½ï¿½ï¿½iï¿½Æ‰ï¿½ï¿½iï¿½ï¿½\ï¿½ï¿½
-	printf("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½á‚¢ï¿½Ü‚ï¿½!!\n");
+	//	1.c¤•i‚Æ‰¿Ši‚ğ•\¦
+	printf("‚¢‚ç‚Á‚µ‚á‚¢‚Ü‚¹!!\n");
 
 	displayItemInfo();
 
-	printf("ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½wï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½[buy]ï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
-	printf("ï¿½wï¿½ï¿½ï¿½ï¿½ï¿½Lï¿½ï¿½ï¿½ï¿½ï¿½Zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ï¿½[end]ï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
+	printf("¤•i‚ğw“ü‚³‚ê‚é•û‚Í[buy]‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢\n");
+	printf("w“ü‚ğƒLƒƒƒ“ƒZƒ‹‚·‚éê‡‚Í[end]‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢\n");
 
 	char command[8] = "end";
 	scanf("%s", command);
-	// ï¿½ubuyï¿½vï¿½Å—ï¿½ï¿½pï¿½Òwï¿½ï¿½ï¿½ï¿½ï¿½[ï¿½h
+	// ubuyv‚Å—˜—pÒw“üƒ‚[ƒh
 	if (strcmp(command, "buy") == 0) {
-		// ï¿½Ş‚ï¿½Kï¿½sï¿½ï¿½ï¿½ÌŠmï¿½F
+		// ’Ş‚è‘K•s‘«‚ÌŠm”F
 		if (checkCountOfCharge() == 1) {
-			returnCurrency(7);
+			returnCurrency(INSUFFICIENT_CHANGE);
 		}
-		// ï¿½ï¿½ï¿½ï¿½
+		// “ü‹à
 		pay();
-		// ï¿½ï¿½ï¿½iï¿½Iï¿½ï¿½
+		// ¤•i‘I‘ğ
 		selectItems();
 
 	}
-	//	d.ï¿½Iï¿½ï¿½ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½uendï¿½vï¿½Åï¿½ï¿½ï¿½ï¿½ï¿½Ê•\ï¿½ï¿½
+	//	d.I—¹ƒRƒ}ƒ“ƒhuendv‚Å‰Šú‰æ–Ê•\¦
 	else if (strcmp(command, "end") == 0) {
-		returnCurrency(1);
+		returnCurrency(END);
 		displayInitialScreen();
 	}
-	// c.ï¿½Ç—ï¿½ï¿½Òƒï¿½ï¿½[ï¿½hï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½uadminï¿½vï¿½ÅŠÇ—ï¿½ï¿½Òƒï¿½ï¿½[ï¿½hï¿½ÉˆÚs
+	// c.ŠÇ—Òƒ‚[ƒhƒRƒ}ƒ“ƒhuadminv‚ÅŠÇ—Òƒ‚[ƒh‚ÉˆÚs
 	else if (strcmp(command, "admin") == 0) {
 		displayAdmin();
 	} else {
-		returnCurrency(5);
+		returnCurrency(NON_EXIST_COMMAND);
 		displayInitialScreen();
 	}
 
 }
 
 /*
- * ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½Ì•\ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½Bï¿½ï¿½ï¿½iï¿½Ôï¿½ï¿½Aï¿½ï¿½ï¿½iï¿½ï¿½ï¿½Aï¿½ï¿½ï¿½iï¿½Aï¿½cï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½
+ * ¤•iî•ñ‚Ì•\¦‚ğ‚µ‚Ü‚·B¤•i”Ô†A¤•i–¼A‰¿ŠiAc”‚ğ•\¦
  */
 void displayItemInfo() {
 	printf("-----------------------------\n");
-	printf("| No | ï¿½ï¿½ï¿½iï¿½ï¿½ | ï¿½ï¿½ï¿½i | ï¿½cï¿½ï¿½ |\n");
+	printf("| No | ¤•i–¼ | ‰¿Ši | c” |\n");
 	printf("-----------------------------\n");
 	for (int i = 1; i < ITEM_KIND; ++i) {
 		printf("| %2d | %6s |  %3d | %3d  |\n", items[i].no, items[i].name,
@@ -123,9 +145,9 @@ void displayItemInfo() {
 }
 
 /*
- * ï¿½Ş‚ï¿½Kï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½é‚©ï¿½mï¿½Fï¿½ï¿½ï¿½Ü‚ï¿½
- * ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ê‡ 1
- * ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ê‡ 0
+ * ’Ş‚è‘K‚ª‘«‚è‚Ä‚¢‚é‚©Šm”F‚µ‚Ü‚·
+ * ‘«‚è‚Ä‚¢‚È‚¢ê‡ 1
+ * ‘«‚è‚Ä‚¢‚éê‡ 0
  */
 int checkCountOfCharge() {
 	if (currency[1].num < 1 || currency[2].num < 4 || currency[3].num < 1
@@ -137,117 +159,117 @@ int checkCountOfCharge() {
 }
 
 /*
- * ï¿½ï¿½ï¿½pï¿½Ò‚ï¿½ï¿½ï¿½ï¿½zï¿½ğ“Š“ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Û‚Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+ * —˜—pÒ‚ª‹àŠz‚ğ“Š“ü‚µ‚½Û‚Ìˆ—‚ğ‚µ‚Ü‚·B
  */
 void pay() {
-	printf("ï¿½ï¿½ï¿½ï¿½ï¿½ğ“Š“ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ \nï¿½ï¿½ï¿½Ô‹ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ï¿½[end]ï¿½Æ“ï¿½ï¿½Í‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
+	printf("‚¨‹à‚ğ“Š“ü‚µ‚Ä‚­‚¾‚³‚¢ \n¦•Ô‹à‚·‚éê‡‚Í[end]‚Æ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢\n");
 
-	//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í‘Ò‚ï¿½[ï¿½Ê‰İï¿½Ş•ï¿½(1000,500,100,50,10)5ï¿½ï¿½Loop]
+	//	“ü‹à“ü—Í‘Ò‚¿[’Ê‰İí—Ş•ª(1000,500,100,50,10)5‰ñLoop]
 	for (int i = 0; i < MONEY_KIND; ++i) {
-		//	ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½ï¿½ï¿½ï¿½1990ï¿½~ï¿½ÉˆÈï¿½Ìê‡ï¿½Ô‹ï¿½
+		//	“Š“ü‹àŠz‚ªãŒÀ1990‰~‚ÉˆÈã‚Ìê‡•Ô‹à
 		if (amountOfPayment >= 1990) {
-			returnCurrency(2);
+			returnCurrency(OVER_MAX_PAYMENT);
 			break;
 		}
-		printf("%dï¿½~ >>", payment[i].price);
+		printf("%d‰~ >>", payment[i].price);
 		int count = 0;
 		scanf("%d", &count);
-		// ï¿½ï¿½ï¿½ï¿½ï¿½È‚ï¿½ï¿½Ìê‡
+		// “ü‹à‚È‚µ‚Ìê‡
 		if (count == 0) {
-			printf("| ï¿½ï¿½ï¿½z:%d | ï¿½ï¿½ï¿½ï¿½:%d | ï¿½ï¿½ï¿½ï¿½ï¿½z:%d |\n", payment[i].price, count,
+			printf("| ‹àŠz:%d | –‡”:%d | “ü‹àŠz:%d |\n", payment[i].price, count,
 					payment[i].price * count);
 			continue;
 		}
-		// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ìê‡
+		// ³í“ü‹à‚Ìê‡
 		if (count != 0) {
-			printf("| ï¿½ï¿½ï¿½z:%d | ï¿½ï¿½ï¿½ï¿½:%d | ï¿½ï¿½ï¿½ï¿½ï¿½z:%d |\n", payment[i].price, count,
+			printf("| ‹àŠz:%d | –‡”:%d | “ü‹àŠz:%d |\n", payment[i].price, count,
 					payment[i].price * count);
 			amountOfPayment = amountOfPayment + payment[i].price * count;
 			payment[i].num = count;
 		} else {
 			continue;
 		}
-		printf("ï¿½ï¿½ï¿½vï¿½ï¿½ï¿½ï¿½ï¿½z:%d\n", amountOfPayment);
+		printf("‡Œv“ü‹àŠz:%d\n", amountOfPayment);
 	}
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½ï¿½ï¿½ï¿½iï¿½ÌÅï¿½ï¿½ï¿½ï¿½zï¿½ï¿½è­ï¿½È‚ï¿½ï¿½ê‡
+	// “Š“ü‹àŠz‚ª¤•i‚ÌÅ¬‹àŠz‚æ‚è­‚È‚¢ê‡
 	if (amountOfPayment < MIN_PRICE) {
-		returnCurrency(3);
+		returnCurrency(INSUFFICIENT_PAYMENT);
 		displayInitialScreen();
 	}
 	return;
 }
 
 /*
- * ï¿½ï¿½ï¿½pï¿½Ò‚ï¿½ï¿½ï¿½ï¿½iï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Û‚Ìï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+ * —˜—pÒ‚ª¤•i‚ğ‘I‘ğ‚·‚éÛ‚Ìˆ—‚ğ‚µ‚Ü‚·B
  */
 void selectItems() {
 	int itemNo = 0;
 	int buyNum = 0;
 	displayItemInfo();
 
-	printf("ï¿½ï¿½ï¿½ï¿½]ï¿½Ìï¿½ï¿½iï¿½ï¿½Noï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ >> \n");
+	printf("‚²Šó–]‚Ì¤•i‚ÌNo‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢ >> \n");
 	scanf("%d", &itemNo);
 
-	// ï¿½ï¿½ï¿½İ‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ê‡ï¿½Ô‹ï¿½
+	// ‘¶İ‚µ‚È‚¢¤•i‚ª‘I‘ğ‚³‚ê‚½ê‡•Ô‹à
 	if (itemNo < 1 || itemNo > 5) {
-		returnCurrency(4);
+		returnCurrency(NON_EXIST_ITEM);
 	}
-	// ï¿½ï¿½ï¿½ï¿½Ø‚ï¿½Ìï¿½ï¿½iï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ê‡ï¿½Ô‹ï¿½
+	// ”„‚èØ‚ê‚Ì¤•i‚ª‘I‘ğ‚³‚ê‚½ê‡•Ô‹à
 	else if (items[itemNo].num == 0) {
-		returnCurrency(6);
+		returnCurrency(INSUFFICIENTNON_ITEM);
 	}
 	printf("\n");
-	printf("ï¿½ï¿½ï¿½ï¿½]ï¿½Ì–{ï¿½ï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ >> \n");
+	printf("‚²Šó–]‚Ì–{”‚ğ‘I‘ğ‚µ‚Ä‚­‚¾‚³‚¢ >> \n");
 	scanf("%d", &buyNum);
 	printf("\n");
 
-	// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½iï¿½Ì‰ï¿½ï¿½iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½Ô‹ï¿½
+	// ‘I‘ğ‚µ‚½¤•i‚Ì‰¿Ši‚ª“Š“ü‹àŠz‚ğã‰ñ‚éê‡•Ô‹à
 	if (amountOfPayment < items[itemNo].price * buyNum) {
-		returnCurrency(3);
+		returnCurrency(INSUFFICIENT_PAYMENT);
 	}
-	// ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½wï¿½ï¿½ï¿½ï¿½ï¿½Ê‚É‘Î‚ï¿½ï¿½Ä•sï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ê‡ï¿½Ô‹ï¿½
+	// ‘I‘ğ‚³‚ê‚½¤•i‚ªw“ü”—Ê‚É‘Î‚µ‚Ä•s‘«‚µ‚Ä‚éê‡•Ô‹à
 	else if (items[itemNo].num < buyNum) {
-		returnCurrency(6);
+		returnCurrency(INSUFFICIENTNON_ITEM);
 	}
 
-	// ï¿½wï¿½ï¿½ï¿½ï¿½ï¿½Ê‚Ìuï¿½ï¿½ï¿½iï¿½ï¿½ï¿½vï¿½fï¿½[ï¿½^ï¿½Xï¿½V
+	// w“üŒ‹‰Ê‚Ìu¤•i”vƒf[ƒ^XV
 	items[itemNo].num = items[itemNo].num - buyNum;
-	//ï¿½uï¿½Ş‚ï¿½Kï¿½ï¿½ï¿½ï¿½ï¿½vï¿½fï¿½[ï¿½^ï¿½Xï¿½V
+	//u’Ş‚è‘K–‡”vƒf[ƒ^XV
 	for (int i = 0; i < MONEY_KIND; ++i) {
 		currency[i].num = currency[i].num + payment[i].num;
 	}
-	// ï¿½ï¿½ï¿½ï¿½vï¿½Z
+	// ”„ãŒvZ
 	earning = items[itemNo].price * buyNum;
 	earnings = earnings + earning;
-	// ï¿½Ş‚ï¿½Kï¿½vï¿½Z
+	// ’Ş‚è‘KŒvZ
 	calcChangeCurrency();
 
-	printf("ï¿½wï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½ï¿½iï¿½Íu%sï¿½vï¿½ï¿½%dï¿½{ï¿½Å‚ï¿½\n", items[itemNo].name, buyNum);
-	printf("ï¿½Ş‚ï¿½Kï¿½Ìï¿½ï¿½vï¿½ï¿½%dï¿½~ï¿½Å‚ï¿½\n", amoutOfChange);
-	printf("- ï¿½Ìï¿½ï¿½ï¿½  -\n");
-	printf("|  ï¿½ï¿½ï¿½i  | ï¿½{ï¿½ï¿½ | ï¿½ï¿½ï¿½z | ï¿½Ş‚ï¿½K |\n");
+	printf("w“ü‚³‚ê‚½¤•i‚Íu%sv‚ª%d–{‚Å‚·\n", items[itemNo].name, buyNum);
+	printf("’Ş‚è‘K‚Ì‡Œv‚Í%d‰~‚Å‚·\n", amoutOfChange);
+	printf("- —ÌûØ  -\n");
+	printf("|  ¤•i  | –{” | ‹àŠz | ’Ş‚è‘K |\n");
 	printf("-------------------------------\n");
 	printf("|  %6s  | %2d  |  %3d | %3d  |\n", items[itemNo].name, buyNum,
 			earning, amoutOfChange);
 	printf("-------------------------------\n");
-	printf("- ï¿½Ş‚ï¿½Kï¿½Úï¿½  -\n");
+	printf("- ’Ş‚è‘KÚ×  -\n");
 	printf("---------------\n");
-	printf("| ï¿½Ê‰ï¿½ | ï¿½ï¿½ï¿½ï¿½ |\n");
+	printf("| ’Ê‰İ | –‡” |\n");
 	printf("---------------\n");
 	for (int i = 0; i < MONEY_KIND; ++i) {
 		printf("| %4s | %4d |\n", change[i].name, change[i].num);
 	}
 	printf("---------------\n");
-	printf("ï¿½ï¿½ï¿½è‚ªï¿½Æ‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½!!\n");
+	printf("‚ ‚è‚ª‚Æ‚¤‚²‚´‚¢‚Ü‚µ‚½!!\n");
 
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
+	// “Š“ü‹àŠz‚Ì‰Šú‰»
 	initializePayment();
 	displayInitialScreen();
 }
 
 /*
- * ï¿½Ş‚ï¿½Kï¿½ÌŒvï¿½Zï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+ * ’Ş‚è‘K‚ÌŒvZ‚µ‚Ü‚·B
  */
 void calcChangeCurrency() {
 	amoutOfChange = amountOfPayment - earning;
@@ -266,36 +288,36 @@ void calcChangeCurrency() {
 }
 
 /*
- * ï¿½ï¿½ï¿½ï¿½ï¿½ğ’†’fï¿½ï¿½ï¿½Ô‹ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½B
+ * ˆ—‚ğ’†’f‚µ•Ô‹à‚µ‚Ü‚·B
  */
-void returnCurrency(int reason) {
+void returnCurrency(ReturnReason reason) {
 	switch (reason) {
-	case 1:
-		printf("[end]ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½Ì‚ï¿½\n");
+	case END:
+		printf("[end]‚ğ‰Ÿ‚³‚ê‚½‚Ì‚Å\n");
 		break;
-	case 2:
-		printf("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½ï¿½ï¿½ï¿½1990ï¿½~ï¿½Èï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½Ì‚ï¿½\n");
+	case OVER_MAX_PAYMENT:
+		printf("“Š“ü‹àŠzãŒÀ‚Ì1990‰~ˆÈã“ü‹à‚³‚ê‚½‚Ì‚Å\n");
 		break;
-	case 3:
-		printf("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚ï¿½\n");
+	case INSUFFICIENT_PAYMENT:
+		printf("“Š“ü‹àŠz‚ª•s‘«‚µ‚Ä‚¢‚é‚Ì‚Å\n");
 		break;
-	case 4:
-		printf("ï¿½ï¿½ï¿½İ‚ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚ï¿½\n");
+	case NON_EXIST_ITEM:
+		printf("‘¶İ‚µ‚Ä‚¢‚È‚¢¤•i‚ª‘I‘ğ‚³‚ê‚Ä‚¢‚é‚Ì‚Å\n");
 		break;
-	case 5:
-		printf("ï¿½ï¿½ï¿½İ‚ï¿½ï¿½Ä‚ï¿½ï¿½È‚ï¿½ï¿½Rï¿½}ï¿½ï¿½ï¿½hï¿½ï¿½ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚ï¿½\n");
+	case NON_EXIST_COMMAND:
+		printf("‘¶İ‚µ‚Ä‚¢‚È‚¢ƒRƒ}ƒ“ƒh‚ª‘I‘ğ‚³‚ê‚Ä‚¢‚é‚Ì‚Å\n");
 		break;
-	case 6:
-		printf("ï¿½Iï¿½ï¿½ï¿½ï¿½ï¿½ê‚½ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚ï¿½\n");
+	case INSUFFICIENTNON_ITEM:
+		printf("‘I‘ğ‚³‚ê‚½¤•i‚ª•s‘«‚µ‚Ä‚¢‚é‚Ì‚Å\n");
 		break;
-	case 7:
-		printf("ï¿½Ş‚ï¿½Kï¿½ï¿½ï¿½sï¿½ï¿½ï¿½ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½Ì‚ï¿½\n");
+	case INSUFFICIENT_CHANGE:
+		printf("’Ş‚è‘K‚ª•s‘«‚µ‚Ä‚¢‚é‚Ì‚Å\n");
 		break;
 	default:
 		break;
 	}
-	printf("ï¿½Ô‹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½\n");
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½zï¿½Ìï¿½ï¿½ï¿½ï¿½ï¿½
+	printf("•Ô‹àˆ—‚µ‚Ü‚·\n");
+	// “Š“ü‹àŠz‚Ì‰Šú‰»
 	initializePayment();
 	displayInitialScreen();
 }
@@ -308,48 +330,48 @@ void initializePayment() {
 }
 
 /*
- * ï¿½Ç—ï¿½ï¿½Òƒï¿½ï¿½[ï¿½hï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
- * ï¿½ï¿½ï¿½[ï¿½Uï¿½[ï¿½ÉƒRï¿½}ï¿½ï¿½ï¿½hï¿½Ì“ï¿½ï¿½Í‚ğ‘£‚ï¿½ï¿½Ü‚ï¿½ï¿½B
- * 1.[ci]ï¿½ï¿½ï¿½iï¿½ï¿½[ï¿½ï¿½ï¿½[ï¿½h
- * 2.[cc]ï¿½Ş‚ï¿½Kï¿½ï¿½[ï¿½ï¿½ï¿½[ï¿½h
- * 3.[end]ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê•\ï¿½ï¿½
+ * ŠÇ—Òƒ‚[ƒh‚ğ•\¦‚µ‚Ü‚·
+ * ƒ†[ƒU[‚ÉƒRƒ}ƒ“ƒh‚Ì“ü—Í‚ğ‘£‚µ‚Ü‚·B
+ * 1.[ci]¤•i•â[ƒ‚[ƒh
+ * 2.[cc]’Ş‚è‘K•â[ƒ‚[ƒh
+ * 3.[end]‰Šú‰æ–Ê•\¦
  */
 void displayAdmin() {
-	printf("ï¿½Ç—ï¿½ï¿½Òƒï¿½ï¿½[ï¿½hï¿½Å‚ï¿½\n");
+	printf("ŠÇ—Òƒ‚[ƒh‚Å‚·\n");
 	displayFinanceInfo();
 	displayItemInfo();
 
-	printf("ï¿½ï¿½ï¿½iï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ï¿½[ci]ï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
-	printf("ï¿½Ş‚ï¿½Kï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ï¿½[cc]ï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
-	printf("ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê‚ÉˆÚ“ï¿½ï¿½ï¿½ï¿½ï¿½ê‡ï¿½ï¿½[end]ï¿½ï¿½ï¿½ï¿½Í‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n");
+	printf("¤•i‚ğ•â[‚·‚éê‡‚Í[ci]‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢\n");
+	printf("’Ş‚è‘K‚ğ•â[‚·‚éê‡‚Í[cc]‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢\n");
+	printf("‰Šú‰æ–Ê‚ÉˆÚ“®‚·‚éê‡‚Í[end]‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢\n");
 
 	char command[8] = "end";
 	scanf("%s", command);
-	// ï¿½ï¿½ï¿½iï¿½ï¿½[
+	// ¤•i•â[
 	if (strcmp(command, "ci") == 0) {
 		for (int i = 1; i < ITEM_KIND; ++i) {
 			int num;
-			printf("%sï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½é”ï¿½Ê‚ï¿½ï¿½ï¿½Í‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ >>\n", items[i].name);
+			printf("%s‚ğ•â[‚·‚é”—Ê‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢ >>\n", items[i].name);
 			scanf("%d", &num);
 			items[i].num = items[i].num + num;
-			printf("%sï¿½ï¿½%dï¿½{ï¿½ï¿½[ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½\n", items[i].name, num);
+			printf("%s‚ğ%d–{•â[‚µ‚Ü‚µ‚½\n", items[i].name, num);
 		}
-		printf("--- ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ ---\n");
+		printf("--- •â[Œ‹‰Ê ---\n");
 		displayItemInfo();
 	}
-	// ï¿½Ş‚ï¿½Kï¿½ï¿½[
+	// ’Ş‚è‘K•â[
 	else if (strcmp(command, "cc") == 0) {
 		for (int i = 0; i < MONEY_KIND; ++i) {
 			int num;
-			printf("%sï¿½~ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½é”ï¿½Ê‚ï¿½ï¿½ï¿½Í‚ï¿½ï¿½Ä‚ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ >>\n", currency[i].name);
+			printf("%s‰~‚ğ•â[‚·‚é”—Ê‚ğ“ü—Í‚µ‚Ä‚­‚¾‚³‚¢ >>\n", currency[i].name);
 			scanf("%d", &num);
 			currency[i].num = currency[i].num + num;
-			printf("%sï¿½~ï¿½ï¿½%dï¿½ï¿½ï¿½ï¿½[ï¿½ï¿½ï¿½Ü‚ï¿½ï¿½ï¿½\n", currency[i].name, num);
+			printf("%s‰~‚ğ%d–‡•â[‚µ‚Ü‚µ‚½\n", currency[i].name, num);
 		}
-		printf("--- ï¿½ï¿½[ï¿½ï¿½ï¿½ï¿½ ---\n");
+		printf("--- •â[Œ‹‰Ê ---\n");
 		displayFinanceInfo();
 	}
-	// ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê•\ï¿½ï¿½
+	// ‰Šú‰æ–Ê•\¦
 	else if (strcmp(command, "end") == 0) {
 		displayInitialScreen();
 	} else {
@@ -359,15 +381,15 @@ void displayAdmin() {
 }
 
 /*
- * ï¿½ï¿½ï¿½Kï¿½ï¿½ï¿½ï¿½\ï¿½ï¿½ï¿½ï¿½ï¿½Ü‚ï¿½
+ * ‹à‘Kî•ñ‚ğ•\¦‚µ‚Ü‚·
  */
 void displayFinanceInfo() {
 	printf("---------------\n");
-	printf("  ï¿½ï¿½ï¿½ï¿½ : %dï¿½~\n", earnings);
+	printf("  ”„ã : %d‰~\n", earnings);
 	printf("---------------\n");
-	printf("--ï¿½Ş‚ï¿½Kï¿½cï¿½ï¿½---\n");
+	printf("--’Ş‚è‘Kc”---\n");
 	printf("---------------\n");
-	printf("| ï¿½Ê‰ï¿½ | ï¿½cï¿½ï¿½ |\n");
+	printf("| ’Ê‰İ | c” |\n");
 	printf("---------------\n");
 	for (int i = 0; i < MONEY_KIND; ++i) {
 		printf("| %4s | %4d |\n", currency[i].name, currency[i].num);
